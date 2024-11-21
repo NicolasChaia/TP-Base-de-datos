@@ -167,71 +167,41 @@
 				});
 
 		})();
-	// Forget Password Form.
-	//When the button is clicked, the form is displayed it shows the an email form and a new password form
-		(function() {
-			var $form = document.querySelectorAll('#forget-password-form')[0],
-				$submit = document.querySelectorAll('#forget-password-form input[type="submit"]')[0],
-				$message;
-
-			// Bail if addEventListener isn't supported.
-			if (!('addEventListener' in $form))
-				return;
-
-			// Message.
-			$message = document.createElement('span');
-			$message.classList.add('message');
-			$form.appendChild($message);
-
-			$message._show = function(type, text) {
-
-				$message.innerHTML = text;
-				$message.classList.add(type);
-				$message.classList.add('visible');
-
-				window.setTimeout(function() {
-					$message._hide();
-				}, 3000);
-
-			};
-
-			$message._hide = function() {
-				$message.classList.remove('visible');
-			};
-
-			// Events.
-			// Note: If you're *not* using AJAX, get rid of this event listener.
-			$form.addEventListener('submit', function(event) {
-
-				event.stopPropagation();
-				event.preventDefault();
-
-				// Hide message.
-				$message._hide();
-
-				// Disable submit.
-				$submit.disabled = true;
-
-				// Process form.
-				// Note: Doesn't actually do anything yet (other than report back with a "thank you"),
-				// but there's enough here to piece together a working AJAX submission call that does.
-				window.setTimeout(function() {
-
-					// Reset form.
-					$form.reset();
-
-					// Enable submit.
-					$submit.disabled = false;
-
-					// Show message.
-					$message._show('success', 'Thank you!');
-					//$message._show('failure', 'Something went wrong. Please try again.');
-
-				}, 750);
-
-			});
-
-		})();
 	
+		function handleFilmFormSubmission() {
+			// Seleccionar el formulario
+			const form = document.getElementById('add-film-form');
+		
+			// Validar si el formulario existe
+			if (!form) {
+				console.error("Formulario no encontrado.");
+				return;
+			}
+		
+			// Agregar un listener para el evento submit
+			form.addEventListener('submit', function(event) {
+				// Evitar el envío predeterminado del formulario
+				event.preventDefault();
+		
+				// Obtener los valores de los campos
+				const film = document.getElementById('film').value;
+				const director = document.getElementById('director').value;
+				const year = document.getElementById('year').value;
+				const genre = document.getElementById('genre').value;
+		
+				// Procesar los datos (por ejemplo, mostrarlos en la consola)
+				console.log(`Film: ${film}`);
+				console.log(`Director: ${director}`);
+				console.log(`Year: ${year}`);
+				console.log(`Genre: ${genre}`);
+		
+				// Aquí puedes realizar otras acciones, como enviar los datos a un servidor con fetch
+				// fetch('/endpoint', { method: 'POST', body: JSON.stringify({ film, director, year, genre }) })
+			});
+		}
+		
+		// Llama a la función cuando se cargue el script
+		handleFilmFormSubmission();
+		
 	
 	})();
