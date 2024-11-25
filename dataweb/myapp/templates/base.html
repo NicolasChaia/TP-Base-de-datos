@@ -11,23 +11,20 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="{% static 'images/logo.png' %}" type="image/png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="{% static 'css/main.css' %}" >
+		<link rel="stylesheet" href="{% static 'css/main.css' %}" />
 	</head>
+
 	<body class="is-preload">
 
 		<!-- Header -->
-			<header id="header">
-				<img src="{% static 'images/film-slate.png' %}" alt="logo" style="width: 200px; height: 200px;">
-				<h1>Movie Style</h1>
-				<p>En esta página podras encontrar toda la informcacion de peliculas que necesites.</p>
-			</header>
-	
-			<!-- <form id="signup-form" method="post" action="#">
-				<input type="email" name="email" id="email" placeholder="Email Address" />
-				<input type="password" name="password" id="password" placeholder="Password" />
-				<input type="submit" value="Iniciar Sesion" />
-			</form> -->
-			<div class="container">
+		<header id="header">
+			<img src="{% static 'images/film-slate.png' %}" alt="logo" class="header-logo">
+			<h1>Movie Style</h1>
+			<p>En esta página podrás encontrar toda la información de películas que necesites.</p>
+		</header>
+
+		<!-- Formulario para añadir película -->
+		<div class="container">
 			<h2>Añadir Película</h2>
 			<form id="add-film-form" method="post" action="#">
 				<input type="text" name="film" id="film" placeholder="Film Name" required />
@@ -36,57 +33,102 @@
 				<input type="text" name="genre" id="genre" placeholder="Genre" required />
 				<input type="submit" value="Add Film" />
 			</form>
-			</div>
-			
-			<div class="container">
-				<h2>Buscar Película</h2>
-				
-				<input type="text" id="searchInput" class="search-box" placeholder="Buscar película...">
-				<form> 
-					<input type="radio" name="campo"
-					value="Film-Name" checked>Film Name</input><br>
-					<input type="radio" name="campo"
-					value="Director" checked>Director</input><br>
-					<input type="radio" name="campo"
-					value="Year" checked>Year</input><br>
-					<input type="radio" name="campo"
-					value="Genre" checked>Genre</input><br>
-				</form>
-				<!-- <select name="campo" id="campo">
-					<option value="Film Name">Film Name</option>
-					<option value="Director">Director</option>
-					<option value="Year">Year</option>
-					<option value="Genre">Genre</option>
-				</select> -->
-			</div>
-			
+		</div>
+
+		<!-- Buscar Película -->
+		<div class="container">
+			<h2>Buscar Película</h2>
+			<input type="text" id="searchInput" class="search-box" placeholder="Buscar película..." />
+			<form>
+				<label>
+					<input type="radio" name="campo" value="Film-Name" checked />
+					Film Name
+				</label><br />
+				<label>
+					<input type="radio" name="campo" value="Director" />
+					Director
+				</label><br />
+				<label>
+					<input type="radio" name="campo" value="Year" />
+					Year
+				</label><br />
+				<label>
+					<input type="radio" name="campo" value="Genre" />
+					Genre
+				</label>
+			</form>
+		</div>
+
+		<!-- Botones para buscar y eliminar películas -->
+		<div class="container">
 			<form id="search-movie" method="post" action="#">
-				<input type="submit" value="Search"/>
+				<input type="submit" value="Search" />
 			</form>
 			<form id="delete-movie" method="post" action="#">
-				<input type="submit" value="Delete"/>
+				<input type="submit" value="Delete" />
 			</form>
-			
-			<form id="forget-form" method="post" action="#">
-				<input type="button" value="Add Review" />
-			</form>
+		</div>
 
-			<table class="table" >
+		<!-- Tabla de películas -->
+		<div class="container">
+			<table class="table" id="movieTable">
 				<thead>
-				  <tr>
-					<th>Film Name</th>
-					<th>Director</th>
-					<th>Year</th>
-					<th>Genre</th>
-				  </tr>
+					<tr>
+						<th>Film Name</th>
+						<th>Director</th>
+						<th>Year</th>
+						<th>Genre</th>
+					</tr>
 				</thead>
 				<tbody id="movieTableBody">
-				  
+					<!-- Aquí se añadirán las filas dinámicamente -->
 				</tbody>
-			  </table>
+			</table>
+		</div>
+
+		<!-- Reviews de películas -->
+		
+		<h2 >Reviews de Películas</h2>
+
+			<!-- Buscar reviews -->
+			<div>
+				<h3>Buscar Reviews</h3>
+				<form id="search-review-form" method="post" action="#">
+					<input type="text" name="film-review" id="film-review" placeholder="Nombre de la película" required />
+					<input type="submit" value="Buscar Reviews" />
+				</form>
+			</div>
+
+			<!-- Agregar review -->
+			<div>
+				<h3>Añadir Review</h3>
+				<form id="add-review-form" method="post" action="#">
+					{% csrf_token %}
+					<input type="text" name="film-name" id="film-name" placeholder="Nombre de la película" required />
+					<textarea name="review" id="review" placeholder="Escribe tu review aquí..." rows="5" required></textarea>
+					<input type="submit" value="Añadir Review" />
+				</form>
+				
+			</div>
+			
+
+			<!-- Tabla para mostrar reviews -->
+			<table class="table" id="reviewTable">
+				<thead>
+					<tr>
+						<th>Película</th>
+						<th>Review</th>
+					</tr>
+				</thead>
+				<tbody id="reviewTableBody">
+					<!-- Aquí se añadirán las filas dinámicamente -->
+				</tbody>
+			</table>
+		
 
 		<!-- Scripts -->
-			<script src="{% static 'js/main.js' %}"></script>
+		<script src="{% static 'js/main.js' %}"></script>
+
 
 	</body>
 </html>

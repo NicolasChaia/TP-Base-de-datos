@@ -35,11 +35,7 @@
 				var settings = {
 
 					// Images (in the format of 'url': 'alignment').
-						images: {
-							'images/bg01.jpg': 'center',
-							'images/bg02.jpg': 'center',
-							'images/bg03.jpg': 'center'
-						},
+					
 
 					// Delay.
 						delay: 6000
@@ -205,3 +201,62 @@
 		
 	
 	})();
+
+
+	//reviews 
+	function handleReviewFormSubmission() {
+
+		
+		console.log("Formulario cargado");
+
+		// Seleccionar el formulario
+		const form = document.getElementById('add-review-form');
+	
+		// Validar si el formulario existe
+		if (!form) {
+			console.error("Formulario no encontrado.");
+			return;
+		}
+	
+		// Agregar un listener para el evento submit
+		form.addEventListener('submit', function(event) {
+			// Evitar el envío predeterminado del formulario
+			event.preventDefault();
+	
+			// Obtener los valores de los campos
+			const review = document.getElementById('review').value;
+			const filmName = document.getElementById('film-name').value;
+	
+			// Validar que los campos no estén vacíos
+			if (!review || !filmName) {
+				alert("Por favor, completa todos los campos.");
+				return;
+			}
+	
+			// Insertar la review en la tabla de forma dinámica
+			const tableBody = document.getElementById('reviewTableBody');
+			const newRow = document.createElement('tr');
+	
+			// Crear y agregar las celdas con la película y la review
+			const filmNameCell = document.createElement('td');
+			filmNameCell.textContent = filmName;
+			newRow.appendChild(filmNameCell);
+	
+			const reviewCell = document.createElement('td');
+			reviewCell.textContent = review;
+			newRow.appendChild(reviewCell);
+	
+			// Agregar la nueva fila al cuerpo de la tabla
+			tableBody.appendChild(newRow);
+	
+			// Limpiar los campos del formulario
+			form.reset();
+	
+			// Confirmación en la consola
+			console.log(`Review añadida para la película: ${filmName}`);
+		});
+	}
+	
+	// Inicializar el listener cuando el DOM esté cargado
+	document.addEventListener('DOMContentLoaded', handleReviewFormSubmission);
+	
