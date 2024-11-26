@@ -1,262 +1,117 @@
-/*
-	Eventually by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
+var firebaseConfig = {
+	apiKey: "AIzaSyCCDmOpf0SJfMDfTQ6l3JVPQsowipHRfFI",
+	authDomain: "base-de-datos-6bc22.firebaseapp.com",
+	projectId: "base-de-datos-6bc22",
+	storageBucket: "base-de-datos-6bc22.firebasestorage.app",
+	messagingSenderId: "851585268399",
+	appId: "1:851585268399:web:e30a568f25e986fedef25a",
+	measurementId: "G-1QBL9TJE8N"
+};
 
-(function() {
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+var db = firebase.firestore();
 
-	"use strict";
+function handleReviewFormSubmission() {
+	const form = document.getElementById('add-review-form');
 
-	var	$body = document.querySelector('body');
+	if (!form) {
+		console.error("Formulario no encontrado.");
+		return;
+	}
 
-	// Methods/polyfills.
+	form.addEventListener('submit', function(event) {
+		event.preventDefault();
 
-		// classList | (c) @remy | github.com/remy/polyfills | rem.mit-license.org
-			!function(){function t(t){this.el=t;for(var n=t.className.replace(/^\s+|\s+$/g,"").split(/\s+/),i=0;i<n.length;i++)e.call(this,n[i])}function n(t,n,i){Object.defineProperty?Object.defineProperty(t,n,{get:i}):t.__defineGetter__(n,i)}if(!("undefined"==typeof window.Element||"classList"in document.documentElement)){var i=Array.prototype,e=i.push,s=i.splice,o=i.join;t.prototype={add:function(t){this.contains(t)||(e.call(this,t),this.el.className=this.toString())},contains:function(t){return-1!=this.el.className.indexOf(t)},item:function(t){return this[t]||null},remove:function(t){if(this.contains(t)){for(var n=0;n<this.length&&this[n]!=t;n++);s.call(this,n,1),this.el.className=this.toString()}},toString:function(){return o.call(this," ")},toggle:function(t){return this.contains(t)?this.remove(t):this.add(t),this.contains(t)}},window.DOMTokenList=t,n(Element.prototype,"classList",function(){return new t(this)})}}();
+		const review = document.getElementById('review').value;
+		const filmName = document.getElementById('film-name').value;
 
-		// canUse
-			window.canUse=function(p){if(!window._canUse)window._canUse=document.createElement("div");var e=window._canUse.style,up=p.charAt(0).toUpperCase()+p.slice(1);return p in e||"Moz"+up in e||"Webkit"+up in e||"O"+up in e||"ms"+up in e};
-
-		// window.addEventListener
-			(function(){if("addEventListener"in window)return;window.addEventListener=function(type,f){window.attachEvent("on"+type,f)}})();
-
-	// Play initial animations on page load.
-		window.addEventListener('load', function() {
-			window.setTimeout(function() {
-				$body.classList.remove('is-preload');
-			}, 100);
-		});
-
-	// Slideshow Background.
-		(function() {
-
-			// Settings.
-				var settings = {
-
-					// Images (in the format of 'url': 'alignment').
-					
-
-					// Delay.
-						delay: 6000
-
-				};
-
-			// Vars.
-				var	pos = 0, lastPos = 0,
-					$wrapper, $bgs = [], $bg,
-					k, v;
-
-			// Create BG wrapper, BGs.
-				$wrapper = document.createElement('div');
-					$wrapper.id = 'bg';
-					$body.appendChild($wrapper);
-
-				for (k in settings.images) {
-
-					// Create BG.
-						$bg = document.createElement('div');
-							$bg.style.backgroundImage = 'url("' + k + '")';
-							$bg.style.backgroundPosition = settings.images[k];
-							$wrapper.appendChild($bg);
-
-					// Add it to array.
-						$bgs.push($bg);
-
-				}
-
-			// Main loop.
-				$bgs[pos].classList.add('visible');
-				$bgs[pos].classList.add('top');
-
-				// Bail if we only have a single BG or the client doesn't support transitions.
-					if ($bgs.length == 1
-					||	!canUse('transition'))
-						return;
-
-				window.setInterval(function() {
-
-					lastPos = pos;
-					pos++;
-
-					// Wrap to beginning if necessary.
-						if (pos >= $bgs.length)
-							pos = 0;
-
-					// Swap top images.
-						$bgs[lastPos].classList.remove('top');
-						$bgs[pos].classList.add('visible');
-						$bgs[pos].classList.add('top');
-
-					// Hide last image after a short delay.
-						window.setTimeout(function() {
-							$bgs[lastPos].classList.remove('visible');
-						}, settings.delay / 2);
-
-				}, settings.delay);
-
-		})();
-
-	// Signup Form.
-		(function() {
-
-			// Vars.
-				var $form = document.querySelectorAll('#signup-form')[0],
-					$submit = document.querySelectorAll('#signup-form input[type="submit"]')[0],
-					$message;
-
-			// Bail if addEventListener isn't supported.
-				if (!('addEventListener' in $form))
-					return;
-
-			// Message.
-				$message = document.createElement('span');
-					$message.classList.add('message');
-					$form.appendChild($message);
-
-				$message._show = function(type, text) {
-
-					$message.innerHTML = text;
-					$message.classList.add(type);
-					$message.classList.add('visible');
-
-					window.setTimeout(function() {
-						$message._hide();
-					}, 3000);
-
-				};
-
-				$message._hide = function() {
-					$message.classList.remove('visible');
-				};
-
-			// Events.
-			// Note: If you're *not* using AJAX, get rid of this event listener.
-				$form.addEventListener('submit', function(event) {
-
-					event.stopPropagation();
-					event.preventDefault();
-
-					// Hide message.
-						$message._hide();
-
-					// Disable submit.
-						$submit.disabled = true;
-
-					// Process form.
-					// Note: Doesn't actually do anything yet (other than report back with a "thank you"),
-					// but there's enough here to piece together a working AJAX submission call that does.
-						window.setTimeout(function() {
-
-							// Reset form.
-								$form.reset();
-
-							// Enable submit.
-								$submit.disabled = false;
-
-							// Show message.
-								$message._show('success', 'Thank you!');
-								//$message._show('failure', 'Something went wrong. Please try again.');
-
-						}, 750);
-
-				});
-
-		})();
-	
-		function handleFilmFormSubmission() {
-			// Seleccionar el formulario
-			const form = document.getElementById('add-film-form');
-		
-			// Validar si el formulario existe
-			if (!form) {
-				console.error("Formulario no encontrado.");
-				return;
-			}
-		
-			// Agregar un listener para el evento submit
-			form.addEventListener('submit', function(event) {
-				// Evitar el envío predeterminado del formulario
-				event.preventDefault();
-		
-				// Obtener los valores de los campos
-				const film = document.getElementById('film').value;
-				const director = document.getElementById('director').value;
-				const year = document.getElementById('year').value;
-				const genre = document.getElementById('genre').value;
-		
-				// Procesar los datos (por ejemplo, mostrarlos en la consola)
-				console.log(`Film: ${film}`);
-				console.log(`Director: ${director}`);
-				console.log(`Year: ${year}`);
-				console.log(`Genre: ${genre}`);
-		
-				// Aquí puedes realizar otras acciones, como enviar los datos a un servidor con fetch
-				// fetch('/endpoint', { method: 'POST', body: JSON.stringify({ film, director, year, genre }) })
-			});
-		}
-		
-		// Llama a la función cuando se cargue el script
-		handleFilmFormSubmission();
-		
-	
-	})();
-
-
-	//reviews 
-	function handleReviewFormSubmission() {
-
-		
-		console.log("Formulario cargado");
-
-		// Seleccionar el formulario
-		const form = document.getElementById('add-review-form');
-	
-		// Validar si el formulario existe
-		if (!form) {
-			console.error("Formulario no encontrado.");
+		if (!review || !filmName) {
+			alert("Por favor, completa todos los campos.");
 			return;
 		}
-	
-		// Agregar un listener para el evento submit
-		form.addEventListener('submit', function(event) {
-			// Evitar el envío predeterminado del formulario
-			event.preventDefault();
-	
-			// Obtener los valores de los campos
-			const review = document.getElementById('review').value;
-			const filmName = document.getElementById('film-name').value;
-	
-			// Validar que los campos no estén vacíos
-			if (!review || !filmName) {
-				alert("Por favor, completa todos los campos.");
-				return;
-			}
-	
-			// Insertar la review en la tabla de forma dinámica
-			const tableBody = document.getElementById('reviewTableBody');
-			const newRow = document.createElement('tr');
-	
-			// Crear y agregar las celdas con la película y la review
-			const filmNameCell = document.createElement('td');
-			filmNameCell.textContent = filmName;
-			newRow.appendChild(filmNameCell);
-	
-			const reviewCell = document.createElement('td');
-			reviewCell.textContent = review;
-			newRow.appendChild(reviewCell);
-	
-			// Agregar la nueva fila al cuerpo de la tabla
-			tableBody.appendChild(newRow);
-	
-			// Limpiar los campos del formulario
-			form.reset();
-	
-			// Confirmación en la consola
-			console.log(`Review añadida para la película: ${filmName}`);
+
+		const reviewId = filmName + "-" + new Date().getTime();
+
+		const filmRef = db.collection("reseñas").doc(filmName);
+		filmRef.collection("reviews").doc(reviewId).set({
+			review: review,
+			filmName: filmName
+		})
+		.then(function() {
+			console.log("Reseña añadida con ID: ", reviewId);
+		})
+		.catch(function(error) {
+			console.error("Error al agregar la reseña: ", error);
 		});
-	}
-	
-	// Inicializar el listener cuando el DOM esté cargado
-	document.addEventListener('DOMContentLoaded', handleReviewFormSubmission);
-	
+
+		form.reset();
+		console.log(`Reseña añadida para la película: ${filmName}`);
+	});
+}
+
+function handleSearchFormSubmission() {
+	const searchForm = document.getElementById('searchReviewForm');
+	const searchInput = document.getElementById('reviewInput');
+	const searchResults = document.getElementById('reviewTableBody');
+
+	searchForm.addEventListener('submit', function(event) {
+		console.log("Buscando reseñas");
+		event.preventDefault();
+
+		const filmName = searchInput.value.trim();
+		console.log("Buscando reseñas para:", filmName);
+
+		if (!filmName) {
+			alert("Por favor, introduce el nombre de una película.");
+			return;
+		}
+
+		searchResults.innerHTML = '';
+
+		const filmRef = db.collection("reseñas").doc(filmName);
+
+		filmRef.collection("reviews").get()
+			.then(function(querySnapshot) {
+				if (querySnapshot.empty) {
+					const row = document.createElement('tr');
+					const cell = document.createElement('td');
+					cell.setAttribute('colspan', '2');
+					cell.textContent = 'No se encontraron reseñas para esta película.';
+					row.appendChild(cell);
+					searchResults.appendChild(row);
+					return;
+				}
+
+				querySnapshot.forEach(function(doc) {
+					const data = doc.data();
+					const row = document.createElement('tr');
+
+					const filmCell = document.createElement('td');
+					filmCell.textContent = filmName;
+
+					const reviewCell = document.createElement('td');
+					reviewCell.textContent = data.review;
+
+					row.appendChild(filmCell);
+					row.appendChild(reviewCell);
+
+					searchResults.appendChild(row);
+				});
+			})
+			.catch(function(error) {
+				console.error("Error al buscar reseñas: ", error);
+				const row = document.createElement('tr');
+				const cell = document.createElement('td');
+				cell.setAttribute('colspan', '2');
+				cell.textContent = 'Error al buscar reseñas. Por favor, inténtalo más tarde.';
+				row.appendChild(cell);
+				searchResults.appendChild(row);
+			});
+	});
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+	handleReviewFormSubmission();
+	handleSearchFormSubmission();
+});

@@ -91,13 +91,7 @@
 		<h2 >Reviews de Películas</h2>
 
 			<!-- Buscar reviews -->
-			<div>
-				<h3>Buscar Reviews</h3>
-				<form id="search-review-form" method="post" action="#">
-					<input type="text" name="film-review" id="film-review" placeholder="Nombre de la película" required />
-					<input type="submit" value="Buscar Reviews" />
-				</form>
-			</div>
+			
 
 			<!-- Agregar review -->
 			<div>
@@ -109,6 +103,17 @@
 					<input type="submit" value="Añadir Review" />
 				</form>
 				
+			</div>
+
+			<!-- Buscar Película -->
+			<div>
+				<h3>Buscar Reseñas</h3>
+				<form id="searchReviewForm">
+					<input type="text" id="reviewInput" placeholder="Buscar por nombre de película..." />
+					<input type="submit" value="Buscar" />
+				</form>
+				
+				<ul id="searchReviewResults"></ul>
 			</div>
 			
 
@@ -127,8 +132,12 @@
 		
 
 		<!-- Scripts -->
+		
+		<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
 		<script src="{% static 'js/main.js' %}"></script>
-
+			
 
 	</body>
 </html>
