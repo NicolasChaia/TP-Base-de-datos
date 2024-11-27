@@ -1,10 +1,5 @@
 {% load static %}
 <!DOCTYPE HTML>
-<!--
-	Eventually by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
 	<head>
 		<title>Movie Style</title>
@@ -87,57 +82,50 @@
 		</div>
 
 		<!-- Reviews de películas -->
-		
-		<h2 >Reviews de Películas</h2>
+		<h2>Reviews de Películas</h2>
 
-			<!-- Buscar reviews -->
-			
+		<!-- Agregar review -->
+		<div>
+			<h3>Añadir Review</h3>
+			<form id="add-review-form" method="post" action="#">
+				{% csrf_token %}
+				<input type="text" name="film-name" id="film-name" placeholder="Nombre de la película" required />
+				<textarea name="review" id="review" placeholder="Escribe tu review aquí..." rows="5" required></textarea>
+				<input type="submit" value="Añadir Review" />
+			</form>
+		</div>
 
-			<!-- Agregar review -->
-			<div>
-				<h3>Añadir Review</h3>
-				<form id="add-review-form" method="post" action="#">
-					{% csrf_token %}
-					<input type="text" name="film-name" id="film-name" placeholder="Nombre de la película" required />
-					<textarea name="review" id="review" placeholder="Escribe tu review aquí..." rows="5" required></textarea>
-					<input type="submit" value="Añadir Review" />
-				</form>
-				
-			</div>
+		<!-- Buscar reviews -->
+		<div>
+			<h3>Buscar Reseñas</h3>
+			<form id="searchReviewForm">
+				<input type="text" id="reviewInput" placeholder="Buscar por nombre de película..." />
+				<input type="submit" value="Buscar" />
+			</form>
+			<ul id="searchReviewResults"></ul>
+		</div>
 
-			<!-- Buscar Película -->
-			<div>
-				<h3>Buscar Reseñas</h3>
-				<form id="searchReviewForm">
-					<input type="text" id="reviewInput" placeholder="Buscar por nombre de película..." />
-					<input type="submit" value="Buscar" />
-				</form>
-				
-				<ul id="searchReviewResults"></ul>
-			</div>
-			
-
-			<!-- Tabla para mostrar reviews -->
+		<!-- Tabla para mostrar reviews -->
+		<div>
+			<h3>Todas las Reseñas</h3>
 			<table class="table" id="reviewTable">
 				<thead>
 					<tr>
 						<th>Película</th>
 						<th>Review</th>
+						<th>Acciones</th>
 					</tr>
 				</thead>
 				<tbody id="reviewTableBody">
 					<!-- Aquí se añadirán las filas dinámicamente -->
 				</tbody>
 			</table>
-		
+		</div>
 
 		<!-- Scripts -->
-		
 		<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
 		<script src="{% static 'js/main.js' %}"></script>
-			
-
 	</body>
 </html>
