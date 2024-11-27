@@ -24,50 +24,51 @@
 		</header>
 
 		<!-- Formulario para añadir película -->
-		<div class="container">
-			<h2>Añadir Película</h2>
-			<form id="add-film-form" method="post" action="#">
-				<input type="text" name="film" id="film" placeholder="Film Name" required />
-				<input type="text" name="director" id="director" placeholder="Director" required />
-				<input type="text" name="year" id="year" placeholder="Year" required />
-				<input type="text" name="genre" id="genre" placeholder="Genre" required />
-				<input type="submit" value="Add Film" />
-			</form>
-		</div>
+		<h2>Añadir Nueva Película ➕</h2>
+		<form method="POST">
+			{% csrf_token %}
+			{{ movie_form.as_p }}
+			<button type="submit" name="add_movie">Añadir Película</button>
+		</form>
 
-		<!-- Buscar Película -->
-		<div class="container">
-			<h2>Buscar Película</h2>
-			<input type="text" id="searchInput" class="search-box" placeholder="Buscar película..." />
-			<form>
-				<label>
-					<input type="radio" name="campo" value="Film-Name" checked />
-					Film Name
-				</label><br />
-				<label>
-					<input type="radio" name="campo" value="Director" />
-					Director
-				</label><br />
-				<label>
-					<input type="radio" name="campo" value="Year" />
-					Year
-				</label><br />
-				<label>
-					<input type="radio" name="campo" value="Genre" />
-					Genre
-				</label>
-			</form>
-		</div>
+    	<!-- Buscar Películas -->
+		<h2>Buscar Películas 🔍</h2>
+		<form method="POST">
+			{% csrf_token %}
+			{{ search_form.as_p }}
+			<button type="submit" name="search_movie">Buscar</button>
+		</form>
 
-		<!-- Botones para buscar y eliminar películas -->
-		<div class="container">
-			<form id="search-movie" method="post" action="#">
-				<input type="submit" value="Search" />
-			</form>
-			<form id="delete-movie" method="post" action="#">
-				<input type="submit" value="Delete" />
-			</form>
-		</div>
+		<!-- Eliminar Películas -->
+		<h2>Eliminar Películas 🗑️</h2>
+		<form method="POST">
+			{% csrf_token %}
+			<label for="delete_by">Eliminar por:</label>
+			<select name="delete_by" id="delete_by">
+				<option value="title">Título</option>
+				<option value="director">Director</option>
+				<option value="genre">Género</option>
+			</select>
+			<input type="text" name="delete_condition" placeholder="Ingrese el valor" required>
+			<button type="submit" name="delete_movies_by">Eliminar</button>
+		</form>
+
+		
+		<h2>Actualizar Película ✏️</h2>
+		<form method="POST">
+			{% csrf_token %}
+			<label for="update_by">Actualizar por:</label>
+			<select name="update_by" id="update_by">
+				<option value="director">Director</option>
+				<option value="genre">Género</option>
+			</select>
+			<input type="text" name="update_condition" placeholder="Ingrese el valor a buscar" required>
+			<input type="text" name="new_value" placeholder="Nuevo valor" required>
+			<button type="submit" name="update_movie_by">Actualizar</button>
+		</form>
+
+
+
 
 		<!-- Tabla de películas -->
 		<div class="container">
@@ -76,15 +77,25 @@
 					<tr>
 						<th>Film Name</th>
 						<th>Director</th>
-						<th>Year</th>
 						<th>Genre</th>
 					</tr>
 				</thead>
 				<tbody id="movieTableBody">
-					<!-- Aquí se añadirán las filas dinámicamente -->
+					<h2>Lista de Películas</h2>
+					{% for movie in movie_list %}
+						<tr>
+							<td>{{ movie.title }}</td>
+							<td>{{ movie.director }}</td>
+							<td>{{ movie.genre }}</td>
+						</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>
+		
+
+
+
 
 		<!-- Reviews de películas -->
 		
