@@ -6,149 +6,162 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html>
-	<head>
-		<title>Movie Style</title>
-		<meta charset="utf-8" />
-		<link rel="icon" href="{% static 'images/logo.png' %}" type="image/png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="{% static 'css/main.css' %}" />
-	</head>
 
-	<body class="is-preload">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, initial-scale=1.2">
 
-		<!-- Header -->
-		<header id="header">
-			<img src="{% static 'images/film-slate.png' %}" alt="logo" class="header-logo">
-			<h1>Movie Style</h1>
-			<p>En esta página podrás encontrar toda la información de películas que necesites.</p>
-		</header>
+	<title>Movie Style</title>
+	<meta charset="utf-8" />
+	<link rel="icon" href="{% static 'images/logo.png' %}" type="image/png" />
+	<link rel="stylesheet" href="{% static 'css/main.css' %}" />
+</head>
 
-		<!-- Formulario para añadir película -->
-		<h2>Añadir Nueva Película ➕</h2>
-		<form method="POST">
+<body class="is-preload">
+
+	<!-- Header -->
+	<header id="header">
+		<img src="{% static 'images/film-slate.png' %}" alt="logo" class="header-logo">
+		<h1>Movie Style</h1>
+		<p>En esta página podrás encontrar toda la información de películas que necesites.</p>
+	</header>
+
+	<!-- Formulario para añadir película -->
+	<h2>Añadir Nueva Película ➕</h2>
+	<form method="POST">
+		{% csrf_token %}
+		{{ movie_form.as_p }}
+		<button type="submit" name="add_movie">Añadir Película</button>
+	</form>
+
+	<!-- Buscar Películas -->
+	<h2>Buscar Películas 🔍</h2>
+	<form method="POST">
+		{% csrf_token %}
+		{{ search_form.as_p }}
+		<button type="submit" name="search_movie">Buscar</button>
+	</form>
+	{% if movies %}
+	<h2>Resultados</h2>
+	<ul>
+		<h4>Título	-	Director	-	Género</h4>
+		{% for movie in movies %}
+		<li>{{ movie.title }} - {{ movie.director }} - {{ movie.genre }}</li>
+		{% endfor %}
+	</ul>
+	{% elif movies is not None %}
+	<p>No se encontraron películas.</p>
+	{% endif %}
+	<!-- Eliminar Películas -->
+	<h2>Eliminar Películas 🗑️</h2>
+	<form method="POST">
+		{% csrf_token %}
+		<label for="delete_by">Eliminar por:</label>
+		<select name="delete_by" id="delete_by">
+			<option value="title">Título</option>
+			<option value="director">Director</option>
+			<option value="genre">Género</option>
+		</select>
+		<input type="text" name="delete_condition" placeholder="Ingrese el valor" required>
+		<button type="submit" name="delete_movies_by">Eliminar</button>
+	</form>
+
+
+	<h2>Actualizar Película ✏️</h2>
+	<form method="POST">
+		{% csrf_token %}
+		<label for="update_by">Actualizar por:</label>
+		<select name="update_by" id="update_by">
+			<option value="director">Director</option>
+			<option value="genre">Género</option>
+		</select>
+		<input type="text" name="update_condition" placeholder="Ingrese el valor a buscar" required>
+		<input type="text" name="new_value" placeholder="Nuevo valor" required>
+		<button type="submit" name="update_movie_by">Actualizar</button>
+	</form>
+
+
+
+
+	<!-- Tabla de películas -->
+	<div class="container">
+		<table class="table" id="movieTable">
+			<thead>
+				<tr>
+					<th>Film Name</th>
+					<th>Director</th>
+					<th>Genre</th>
+				</tr>
+			</thead>
+			<tbody id="movieTableBody">
+				<h2>Lista de Películas</h2>
+				{% for movie in movie_list %}
+				<tr>
+					<td>{{ movie.title }}</td>
+					<td>{{ movie.director }}</td>
+					<td>{{ movie.genre }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+
+
+
+
+	<!-- Reviews de películas -->
+
+	<h2>Reviews de Películas</h2>
+
+	<!-- Buscar reviews -->
+
+
+	<!-- Agregar review -->
+	<div>
+		<h3>Añadir Review</h3>
+		<form id="add-review-form" method="post" action="#">
 			{% csrf_token %}
-			{{ movie_form.as_p }}
-			<button type="submit" name="add_movie">Añadir Película</button>
+			<input type="text" name="film-name" id="film-name" placeholder="Nombre de la película" required />
+			<textarea name="review" id="review" placeholder="Escribe tu review aquí..." rows="5" required></textarea>
+			<input type="submit" value="Añadir Review" />
 		</form>
 
-    	<!-- Buscar Películas -->
-		<h2>Buscar Películas 🔍</h2>
-		<form method="POST">
-			{% csrf_token %}
-			{{ search_form.as_p }}
-			<button type="submit" name="search_movie">Buscar</button>
+	</div>
+
+	<!-- Buscar Película -->
+	<div>
+		<h3>Buscar Reseñas</h3>
+		<form id="searchReviewForm">
+			<input type="text" id="reviewInput" placeholder="Buscar por nombre de película..." />
+			<input type="submit" value="Buscar" />
 		</form>
 
-		<!-- Eliminar Películas -->
-		<h2>Eliminar Películas 🗑️</h2>
-		<form method="POST">
-			{% csrf_token %}
-			<label for="delete_by">Eliminar por:</label>
-			<select name="delete_by" id="delete_by">
-				<option value="title">Título</option>
-				<option value="director">Director</option>
-				<option value="genre">Género</option>
-			</select>
-			<input type="text" name="delete_condition" placeholder="Ingrese el valor" required>
-			<button type="submit" name="delete_movies_by">Eliminar</button>
-		</form>
-
-		
-		<h2>Actualizar Película ✏️</h2>
-		<form method="POST">
-			{% csrf_token %}
-			<label for="update_by">Actualizar por:</label>
-			<select name="update_by" id="update_by">
-				<option value="director">Director</option>
-				<option value="genre">Género</option>
-			</select>
-			<input type="text" name="update_condition" placeholder="Ingrese el valor a buscar" required>
-			<input type="text" name="new_value" placeholder="Nuevo valor" required>
-			<button type="submit" name="update_movie_by">Actualizar</button>
-		</form>
+		<ul id="searchReviewResults"></ul>
+	</div>
 
 
+	<!-- Tabla para mostrar reviews -->
+	<table class="table" id="reviewTable">
+		<thead>
+			<tr>
+				<th>Película</th>
+				<th>Review</th>
+			</tr>
+		</thead>
+		<tbody id="reviewTableBody">
+			<!-- Aquí se añadirán las filas dinámicamente -->
+		</tbody>
+	</table>
 
 
-		<!-- Tabla de películas -->
-		<div class="container">
-			<table class="table" id="movieTable">
-				<thead>
-					<tr>
-						<th>Film Name</th>
-						<th>Director</th>
-						<th>Genre</th>
-					</tr>
-				</thead>
-				<tbody id="movieTableBody">
-					<h2>Lista de Películas</h2>
-					{% for movie in movie_list %}
-						<tr>
-							<td>{{ movie.title }}</td>
-							<td>{{ movie.director }}</td>
-							<td>{{ movie.genre }}</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-		
+	<!-- Scripts -->
+
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+	<script src="{% static 'js/main.js' %}"></script>
 
 
+</body>
 
-
-		<!-- Reviews de películas -->
-		
-		<h2 >Reviews de Películas</h2>
-
-			<!-- Buscar reviews -->
-			
-
-			<!-- Agregar review -->
-			<div>
-				<h3>Añadir Review</h3>
-				<form id="add-review-form" method="post" action="#">
-					{% csrf_token %}
-					<input type="text" name="film-name" id="film-name" placeholder="Nombre de la película" required />
-					<textarea name="review" id="review" placeholder="Escribe tu review aquí..." rows="5" required></textarea>
-					<input type="submit" value="Añadir Review" />
-				</form>
-				
-			</div>
-
-			<!-- Buscar Película -->
-			<div>
-				<h3>Buscar Reseñas</h3>
-				<form id="searchReviewForm">
-					<input type="text" id="reviewInput" placeholder="Buscar por nombre de película..." />
-					<input type="submit" value="Buscar" />
-				</form>
-				
-				<ul id="searchReviewResults"></ul>
-			</div>
-			
-
-			<!-- Tabla para mostrar reviews -->
-			<table class="table" id="reviewTable">
-				<thead>
-					<tr>
-						<th>Película</th>
-						<th>Review</th>
-					</tr>
-				</thead>
-				<tbody id="reviewTableBody">
-					<!-- Aquí se añadirán las filas dinámicamente -->
-				</tbody>
-			</table>
-		
-
-		<!-- Scripts -->
-		
-		<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
-		<script src="{% static 'js/main.js' %}"></script>
-			
-
-	</body>
 </html>

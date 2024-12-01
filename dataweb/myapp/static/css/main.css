@@ -901,8 +901,9 @@ button,
         
 
 
-
-
+        body {
+          zoom: 1.2; /* Aumenta el zoom en un 20% */
+      }
 
 
 

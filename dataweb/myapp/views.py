@@ -29,6 +29,12 @@ def home(request):
                     movies = Movie.objects.filter(genre__icontains=query)
                 else:
                     movies = Movie.objects.filter(title__icontains=query)
+                return render(request, 'home.html', {
+                    'movie_form': movie_form,
+                    'search_form': search_form,
+                    'movie_list': movie_list,
+                    'movies': movies,
+                })
 
         # Eliminar películas
         elif 'delete_movies_by' in request.POST:
