@@ -1,3 +1,4 @@
+// Configuración de Firebase
 var firebaseConfig = {
 	apiKey: "AIzaSyCCDmOpf0SJfMDfTQ6l3JVPQsowipHRfFI",
 	authDomain: "base-de-datos-6bc22.firebaseapp.com",
@@ -7,111 +8,104 @@ var firebaseConfig = {
 	appId: "1:851585268399:web:e30a568f25e986fedef25a",
 	measurementId: "G-1QBL9TJE8N"
 };
-
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
-var db = firebase.firestore();
+const db = firebase.firestore();
 
-function handleReviewFormSubmission() {
-	const form = document.getElementById('add-review-form');
+// Función para añadir reseñas
+document.getElementById('add-review-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-	if (!form) {
-		console.error("Formulario no encontrado.");
-		return;
-	}
+    const filmName = document.getElementById('film-name').value.trim();
+    const review = document.getElementById('review').value.trim();
 
-	form.addEventListener('submit', function(event) {
-		event.preventDefault();
-
-		const review = document.getElementById('review').value;
-		const filmName = document.getElementById('film-name').value;
-
-		if (!review || !filmName) {
-			alert("Por favor, completa todos los campos.");
-			return;
-		}
-
-		const reviewId = filmName + "-" + new Date().getTime();
-
-		const filmRef = db.collection("reseñas").doc(filmName);
-		filmRef.collection("reviews").doc(reviewId).set({
-			review: review,
-			filmName: filmName
-		})
-		.then(function() {
-			console.log("Reseña añadida con ID: ", reviewId);
-		})
-		.catch(function(error) {
-			console.error("Error al agregar la reseña: ", error);
-		});
-
-		form.reset();
-		console.log(`Reseña añadida para la película: ${filmName}`);
-	});
-}
-
-function handleSearchFormSubmission() {
-	const searchForm = document.getElementById('searchReviewForm');
-	const searchInput = document.getElementById('reviewInput');
-	const searchResults = document.getElementById('reviewTableBody');
-
-	searchForm.addEventListener('submit', function(event) {
-		console.log("Buscando reseñas");
-		event.preventDefault();
-
-		const filmName = searchInput.value.trim();
-		console.log("Buscando reseñas para:", filmName);
-
-		if (!filmName) {
-			alert("Por favor, introduce el nombre de una película.");
-			return;
-		}
-
-		searchResults.innerHTML = '';
-
-		const filmRef = db.collection("reseñas").doc(filmName);
-
-		filmRef.collection("reviews").get()
-			.then(function(querySnapshot) {
-				if (querySnapshot.empty) {
-					const row = document.createElement('tr');
-					const cell = document.createElement('td');
-					cell.setAttribute('colspan', '2');
-					cell.textContent = 'No se encontraron reseñas para esta película.';
-					row.appendChild(cell);
-					searchResults.appendChild(row);
-					return;
-				}
-
-				querySnapshot.forEach(function(doc) {
-					const data = doc.data();
-					const row = document.createElement('tr');
-
-					const filmCell = document.createElement('td');
-					filmCell.textContent = filmName;
-
-					const reviewCell = document.createElement('td');
-					reviewCell.textContent = data.review;
-
-					row.appendChild(filmCell);
-					row.appendChild(reviewCell);
-
-					searchResults.appendChild(row);
-				});
-			})
-			.catch(function(error) {
-				console.error("Error al buscar reseñas: ", error);
-				const row = document.createElement('tr');
-				const cell = document.createElement('td');
-				cell.setAttribute('colspan', '2');
-				cell.textContent = 'Error al buscar reseñas. Por favor, inténtalo más tarde.';
-				row.appendChild(cell);
-				searchResults.appendChild(row);
-			});
-	});
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-	handleReviewFormSubmission();
-	handleSearchFormSubmission();
+    if (filmName && review) {
+        try {
+            await db.collection('reviews').add({ filmName, review });
+            alert('Review añadida exitosamente');
+            document.getElementById('add-review-form').reset();
+            loadReviews(); // Recargar la tabla después de añadir una reseña
+        } catch (error) {
+            console.error('Error al añadir la reseña:', error);
+            alert('Hubo un problema al añadir la reseña.');
+        }
+    } else {
+        alert('Por favor completa todos los campos.');
+    }
 });
+
+// Función para buscar reseñas
+document.getElementById('searchReviewForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const searchValue = document.getElementById('reviewInput').value.trim().toLowerCase();
+    const resultsContainer = document.getElementById('searchReviewResults');
+    resultsContainer.innerHTML = '';
+
+    if (searchValue) {
+        try {
+            const snapshot = await db.collection('reviews').get();
+            let results = '';
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                if (data.filmName.toLowerCase().includes(searchValue)) {
+                    results += `<li>${data.filmName}: ${data.review}</li>`;
+                }
+            });
+
+            resultsContainer.innerHTML = results || '<li>No se encontraron resultados.</li>';
+        } catch (error) {
+            console.error('Error al buscar reseñas:', error);
+            alert('Hubo un problema al buscar las reseñas.');
+        }
+    } else {
+        alert('Por favor ingresa un término de búsqueda.');
+    }
+});
+
+// Función para cargar todas las reseñas
+async function loadReviews() {
+    const tableBody = document.getElementById('reviewTableBody');
+    tableBody.innerHTML = '';
+
+    try {
+        const snapshot = await db.collection('reviews').get();
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${data.filmName}</td>
+                <td>${data.review}</td>
+                <td>
+                    <button class="delete-btn" data-id="${doc.id}">Eliminar</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // Añadir eventos a los botones de eliminar
+        document.querySelectorAll('.delete-btn').forEach((button) => {
+            button.addEventListener('click', async (e) => {
+                const id = e.target.getAttribute('data-id');
+                try {
+                    await db.collection('reviews').doc(id).delete();
+                    alert('Reseña eliminada exitosamente');
+                    loadReviews(); // Recargar la tabla después de eliminar
+                } catch (error) {
+                    console.error('Error al eliminar la reseña:', error);
+                    alert('Hubo un problema al eliminar la reseña.');
+                }
+            });
+        });
+    } catch (error) {
+        console.error('Error al cargar las reseñas:', error);
+        alert('Hubo un problema al cargar las reseñas.');
+    }
+}
+
+// Inicializar la tabla de reseñas al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    loadReviews();
+});
+
+

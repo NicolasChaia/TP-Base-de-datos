@@ -9,7 +9,6 @@
 
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, initial-scale=1.2">
-
 	<title>Movie Style</title>
 	<meta charset="utf-8" />
 	<link rel="icon" href="{% static 'images/logo.png' %}" type="image/png" />
@@ -41,16 +40,17 @@
 		<button type="submit" name="search_movie">Buscar</button>
 	</form>
 	{% if movies %}
-	<h2>Resultados</h2>
-	<ul>
-		<h4>Título	-	Director	-	Género</h4>
-		{% for movie in movies %}
-		<li>{{ movie.title }} - {{ movie.director }} - {{ movie.genre }}</li>
-		{% endfor %}
-	</ul>
+		<h2>Resultados</h2>
+		<ul>
+			<h4>Título - Director - Género</h4>
+			{% for movie in movies %}
+				<li>{{ movie.title }} - {{ movie.director }} - {{ movie.genre }}</li>
+			{% endfor %}
+		</ul>
 	{% elif movies is not None %}
-	<p>No se encontraron películas.</p>
+		<p>No se encontraron películas.</p>
 	{% endif %}
+
 	<!-- Eliminar Películas -->
 	<h2>Eliminar Películas 🗑️</h2>
 	<form method="POST">
@@ -65,7 +65,7 @@
 		<button type="submit" name="delete_movies_by">Eliminar</button>
 	</form>
 
-
+	<!-- Actualizar Película -->
 	<h2>Actualizar Película ✏️</h2>
 	<form method="POST">
 		{% csrf_token %}
@@ -78,9 +78,6 @@
 		<input type="text" name="new_value" placeholder="Nuevo valor" required>
 		<button type="submit" name="update_movie_by">Actualizar</button>
 	</form>
-
-
-
 
 	<!-- Tabla de películas -->
 	<div class="container">
@@ -95,26 +92,18 @@
 			<tbody id="movieTableBody">
 				<h2>Lista de Películas</h2>
 				{% for movie in movie_list %}
-				<tr>
-					<td>{{ movie.title }}</td>
-					<td>{{ movie.director }}</td>
-					<td>{{ movie.genre }}</td>
-				</tr>
+					<tr>
+						<td>{{ movie.title }}</td>
+						<td>{{ movie.director }}</td>
+						<td>{{ movie.genre }}</td>
+					</tr>
 				{% endfor %}
 			</tbody>
 		</table>
 	</div>
 
-
-
-
-
 	<!-- Reviews de películas -->
-
 	<h2>Reviews de Películas</h2>
-
-	<!-- Buscar reviews -->
-
 
 	<!-- Agregar review -->
 	<div>
@@ -125,42 +114,40 @@
 			<textarea name="review" id="review" placeholder="Escribe tu review aquí..." rows="5" required></textarea>
 			<input type="submit" value="Añadir Review" />
 		</form>
-
 	</div>
 
-	<!-- Buscar Película -->
+	<!-- Buscar reviews -->
 	<div>
 		<h3>Buscar Reseñas</h3>
 		<form id="searchReviewForm">
 			<input type="text" id="reviewInput" placeholder="Buscar por nombre de película..." />
 			<input type="submit" value="Buscar" />
 		</form>
-
 		<ul id="searchReviewResults"></ul>
 	</div>
 
-
 	<!-- Tabla para mostrar reviews -->
-	<table class="table" id="reviewTable">
-		<thead>
-			<tr>
-				<th>Película</th>
-				<th>Review</th>
-			</tr>
-		</thead>
-		<tbody id="reviewTableBody">
-			<!-- Aquí se añadirán las filas dinámicamente -->
-		</tbody>
-	</table>
-
+	<div>
+		<h3>Todas las Reseñas</h3>
+		<table class="table" id="reviewTable">
+			<thead>
+				<tr>
+					<th>Película</th>
+					<th>Review</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody id="reviewTableBody">
+				<!-- Aquí se añadirán las filas dinámicamente -->
+			</tbody>
+		</table>
+	</div>
 
 	<!-- Scripts -->
-
 	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
 	<script src="{% static 'js/main.js' %}"></script>
-
 
 </body>
 
